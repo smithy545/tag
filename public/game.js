@@ -27,10 +27,7 @@ Game.start = function() {
 
 	Game.context = Game.canvas.getContext("2d");
 	document.body.appendChild(Game.canvas);
-	var othersinfo = document.createElement("div");
-	othersinfo.setAttribute("id","othersinfo");
-	document.body.appendChild(othersinfo);
-
+	
 	Game.player = new Player();
 
 	Game.conn = io();
@@ -40,18 +37,6 @@ Game.start = function() {
 		Game.others = data;
 		Game.player.update(Game.others);
 		Game.conn.emit('get others');
-	});
-
-	$( "canvas" ).on( "mousemove", function( event ) {
-		othersinfo.innerHTML = "";
-		for(i in Game.others) {
-			var x = Game.others[i].x;
-			var y = Game.others[i].y;
-			var r = Game.others[i].r;
-			if(inCircle(x,y,r,mousex,mousey)) {
-				othersinfo.innerHTML += JSON.stringify(Game.others[i]);
-			}
-		}
 	});
 
 	Game._onEachFrame(Game.run);
