@@ -30,6 +30,11 @@ io.on("connection", function(socket) {
 	socket.on('new', function(p) {
 		p.color = colors[colori++%colors.length];
 		p.moves = [];
+		if(p.color == "#00FF00") {
+			p.streakStart = (new Date).getTime();
+		} else {
+			p.streakStart = 0;
+		}
 		players[p.id] = p;
 		socket.id = p.id;
 		console.log(socket.handshake.address +":"+ socket.id + " connect...");
@@ -66,6 +71,14 @@ setInterval(function() {
 					var temp = players[i].color;
 					players[i].color = p.color;
 					players[j].color = temp;
+					if(players[i].color == "#00FF00") {
+						players[i].streakStart = (new Date).getTime();
+						players[j].streakStart = 0;
+					}
+					if(players[j].color == "#00FF00") {
+						players[j].streakStart = (new Date).getTime();
+						players[i].streakStart = 0;
+					}
 				}
 			}
 		}

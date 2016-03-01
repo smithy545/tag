@@ -27,7 +27,9 @@ Game.start = function() {
 
 	Game.context = Game.canvas.getContext("2d");
 	document.body.appendChild(Game.canvas);
-	
+	Game.log = document.createElement("div");
+	document.body.appendChild(Game.log);
+
 	Game.player = new Player();
 
 	Game.conn = io();
@@ -72,10 +74,21 @@ Game.draw = function() {
 		ctx.fill();
 		ctx.closePath();
 	}
-
 };
 
 Game.update = function() {
+	for(i in Game.others) {
+		if(Game.others[i].streakStart != 0) {
+			Game.log.innerHTML = "Green streak: "+((new Date).getTime() - Game.others[i].streakStart)/1000 +" seconds";
+		}
+	}
+	/* Context translation setup
+	if(Game.player.x > 3*Game.canvas.width/4 ||
+	   Game.player.x < Game.canvas.width/4   ||
+	   Game.player.y > 3*Game.canvas.height/4 ||
+	   Game.player.y < Game.canvas.height/4) {
+
+	} */
 };
 
 document.addEventListener("keydown", function(evt){ Key.onKeyDown(evt); }, false);
