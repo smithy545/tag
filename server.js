@@ -6,9 +6,12 @@ var server = require("http").Server(app);
 var util = require('./public/util.js');
 
 var players = {};
+var sockets = [];
 var colors = ["#FF0000",
 			  "#00FF00",
-			  "#0000FF",];
+			  "#0000FF",
+			  "#00FFFF",
+			  "#FF1493"];
 var colori= 0;
 
 server.listen(3000);
@@ -26,6 +29,7 @@ io = require("socket.io")(server);
 io.on("connection", function(socket) {
 	socket.on('new', function(p) {
 		p.color = colors[colori++%colors.length];
+		p.moves = [];
 		players[p.id] = p;
 		socket.id = p.id;
 		console.log(socket.handshake.address +":"+ socket.id + " connect...");
@@ -38,29 +42,35 @@ io.on("connection", function(socket) {
 		delete players[socket.id];
 	});
 	socket.on('movex', function(x) {
-		players[socket.id].x += x;
-		var p = players[socket.id];
-		for(i in players) {
-			if(i != p.id && util.circlesTouch(p.x, p.y, p.r, players[i].x, players[i].y, players[i].r)) {
-				var temp = players[i].color;
-				players[i].color = p.color;
-				players[socket.id].color = temp;
-			}
-		}
+		players[socket.id].moves.push([x,0]);
 	});
 	socket.on('movey', function(y) {
-		players[socket.id].y += y;
-		var p = players[socket.id];
-		for(i in players) {
-			if(i != p.id && util.circlesTouch(p.x, p.y, p.r, players[i].x, players[i].y, players[i].r)) {
-				var temp = players[i].color;
-				players[i].color = p.color;
-				players[socket.id].color = temp;
-			}
-		}
+		players[socket.id].moves.push([0,y]);
 	});
 });
 
+setInterval(function() {
+	for(j in players) {
+		var p = players[j];
+		var m = p.moves.shift();
+		if(m) {
+			if(p.color == "#00FF00"){
+				p.x += 2*m[0];
+				p.y += 2*m[1];
+			} else {
+				p.x += m[0];
+				p.y += m[1];
+			}
+			for(i in players) {
+				if(i != p.id && util.circlesTouch(p.x, p.y, p.r, players[i].x, players[i].y, players[i].r)) {
+					var temp = players[i].color;
+					players[i].color = p.color;
+					players[j].color = temp;
+				}
+			}
+		}
+	}
+}, 1);
 
 // view engine setup
 app.engine('handlebars', handlebars.engine);

@@ -27,14 +27,9 @@ Game.start = function() {
 
 	Game.context = Game.canvas.getContext("2d");
 	document.body.appendChild(Game.canvas);
-	var log = document.createElement("div");
-	log.setAttribute("id","log");
-	document.body.appendChild(log);
 	var othersinfo = document.createElement("div");
 	othersinfo.setAttribute("id","othersinfo");
 	document.body.appendChild(othersinfo);
-
-	Game.canvas.offset = $("canvas").offset();
 
 	Game.player = new Player();
 
@@ -48,9 +43,6 @@ Game.start = function() {
 	});
 
 	$( "canvas" ).on( "mousemove", function( event ) {
-		var mousex = event.pageX-Game.canvas.offset.left;
-		var mousey = event.pageY-Game.canvas.offset.top;
-		$( "#log" ).text( "Mouse X: " + mousex + ", Mouse Y: " + mousey);
 		othersinfo.innerHTML = "";
 		for(i in Game.others) {
 			var x = Game.others[i].x;
