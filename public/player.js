@@ -21,24 +21,22 @@ Player.prototype.update = function(others) {
 	if(Key.isDown(Key.LEFT)) this.moveLeft();
 	if(Key.isDown(Key.RIGHT)) this.moveRight();
 	if(Key.isDown(Key.DOWN)) this.moveDown();
-}
-
-Player.prototype.move = function(x,y) {
-	this.x += x;
-	this.y += y;
+	this.color = others[this.id].color;
+	this.x = others[this.id].x;
+	this.y = others[this.id].y;
 }
 
 Player.prototype.moveUp = function() {
-	this.y -= 2;
+	Game.conn.emit('movey', -0.5);
 }
 Player.prototype.moveDown = function() {
-	this.y += 2;
+	Game.conn.emit('movey', 0.5);
 }
 Player.prototype.moveLeft = function() {
-	this.x -= 2;
+	Game.conn.emit('movex', -0.5);
 }
 Player.prototype.moveRight = function() {
-	this.x += 2;
+	Game.conn.emit('movex', 0.5);
 }
 
 Player.prototype.getInfo = function() {

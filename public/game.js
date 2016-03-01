@@ -40,8 +40,11 @@ Game.start = function() {
 
 	Game.conn = io();
 	Game.conn.emit('new', Game.player.getInfo());
-	Game.conn.on('updatecolor', function(c) {
-		Game.player.color = c;
+	Game.conn.emit('get others');
+	Game.conn.on('send others', function(data) {
+		Game.others = data;
+		Game.player.update(Game.others);
+		Game.conn.emit('get others');
 	});
 
 	$( "canvas" ).on( "mousemove", function( event ) {
@@ -83,27 +86,20 @@ Game.run = (function() {
 
 Game.draw = function() {
 	Game.context.clearRect(0, 0, Game.width, Game.height);
-	Game.player.draw(Game.context);
 	var ctx = Game.context;
 	for(i in Game.others) {
-		if(Game.others[i].id != Game.player.id){
-			ctx.beginPath();
-			ctx.moveTo(Game.others[i].x,Game.others[i].y);
-			ctx.fillStyle = Game.others[i].color;
-			ctx.arc(Game.others[i].x,Game.others[i].y,Game.others[i].r,0,2*Math.PI);
-			ctx.fill();
-			ctx.closePath();
-		}
+		ctx.beginPath();
+		ctx.moveTo(Game.others[i].x,Game.others[i].y);
+		ctx.fillStyle = Game.others[i].color;
+		ctx.arc(Game.others[i].x,Game.others[i].y,Game.others[i].r,0,2*Math.PI);
+		ctx.fill();
+		ctx.closePath();
 	}
 
 };
 
 Game.update = function() {
-	Game.player.update(Game.others);
-	Game.conn.emit('myinfo', Game.player.getInfo());
-	Game.conn.emit('get others');
-	Game.conn.on('send others', function(data) {
-		Game.others = data;
-		delete Game.others[Game.player.id];
-	});
 };
+
+document.addEventListener("keydown", function(evt){ Key.onKeyDown(evt); }, false);
+document.addEventListener("keyup", function(evt) { Key.onKeyUp(evt); }, false);

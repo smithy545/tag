@@ -37,5 +37,5 @@ function guid() {
     s4() + '-' + s4() + s4() + s4();
 }
 
-document.addEventListener("keydown", function(evt){ Key.onKeyDown(evt); }, false);
-document.addEventListener("keyup", function(evt) { Key.onKeyUp(evt); }, false);
+module.exports.inCircle = inCircle;
+module.exports.circlesTouch = circlesTouch;
