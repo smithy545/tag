@@ -27,14 +27,23 @@ app.get('/', function(req, res, next) {
 io = require("socket.io")(server);
 
 io.on("connection", function(socket) {
-	socket.on('new', function(p) {
+	socket.on('new', function() {
+		var p = {};
+
 		p.color = colors[colori++%colors.length];
-		p.moves = [];
 		if(p.color == "#00FF00") {
 			p.streakStart = (new Date).getTime();
 		} else {
 			p.streakStart = 0;
 		}
+
+		p.x = 100;
+		p.y = 100;
+		p.r = 10;
+		p.id = util.guid();
+		p.moves = [];
+		socket.emit("init", p.id, p.color);
+
 		players[p.id] = p;
 		socket.id = p.id;
 		console.log(socket.handshake.address +":"+ socket.id + " connect...");

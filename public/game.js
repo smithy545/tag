@@ -33,11 +33,14 @@ Game.start = function() {
 	Game.player = new Player();
 
 	Game.conn = io();
-	Game.conn.emit('new', Game.player.getInfo());
-	Game.conn.emit('get others');
+	Game.conn.emit('new');
+	Game.conn.on('init', function(id, color) {
+		Game.player.init(id, color);
+		Game.conn.emit('get others');
+	});
 	Game.conn.on('send others', function(data) {
 		Game.others = data;
-		Game.player.update(Game.others);
+		Game.player.update(data[Game.player.id]);
 		Game.conn.emit('get others');
 	});
 
