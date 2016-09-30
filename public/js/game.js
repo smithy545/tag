@@ -21,12 +21,11 @@ Game._onEachFrame = (function() {
 })();
 
 Game.start = function() {
-	Game.canvas = document.createElement("canvas");
+	Game.canvas = document.getElementById("game");
 	Game.canvas.width = Game.width;
 	Game.canvas.height = Game.height;
 
 	Game.context = Game.canvas.getContext("2d");
-	document.body.appendChild(Game.canvas);
 	Game.log = document.createElement("div");
 	document.body.appendChild(Game.log);
 

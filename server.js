@@ -42,6 +42,7 @@ io.on("connection", function(socket) {
 			p.king = false;
 		} else {
 			p.king = Date.now();
+			p.color = "#00FF00";
 		}
 		p.adj = [];
 		if(p.color == "#00FF00") {
