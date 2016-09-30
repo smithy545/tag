@@ -22,14 +22,14 @@ Player.prototype.update = function(p) {
 }
 
 Player.prototype.moveUp = function() {
-	Game.conn.emit('movey', -0.5);
+	Game.conn.emit('up');
 }
 Player.prototype.moveDown = function() {
-	Game.conn.emit('movey', 0.5);
+	Game.conn.emit('down');
 }
 Player.prototype.moveLeft = function() {
-	Game.conn.emit('movex', -0.5);
+	Game.conn.emit('left');
 }
 Player.prototype.moveRight = function() {
-	Game.conn.emit('movex', 0.5);
+	Game.conn.emit('right');
 }

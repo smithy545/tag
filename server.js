@@ -12,7 +12,8 @@ var colors = ["#FF0000",
 			  "#0000FF",
 			  "#00FFFF",
 			  "#FF1493"];
-var colori= 0;
+var colori = 0;
+var PLAYERSPEED = 1;
 
 server.listen(3000);
 
@@ -32,8 +33,10 @@ io.on("connection", function(socket) {
 
 		p.color = colors[colori++%colors.length];
 		if(p.color == "#00FF00") {
+			p.speedy = true;
 			p.streakStart = (new Date).getTime();
 		} else {
+			p.speedy = false;
 			p.streakStart = 0;
 		}
 
@@ -41,7 +44,10 @@ io.on("connection", function(socket) {
 		p.y = 100;
 		p.r = 10;
 		p.id = util.guid();
-		p.moves = [];
+		p.moves = {
+			x: 0,
+			y: 0,
+		};
 		socket.emit("init", p.id, p.color);
 
 		players[p.id] = p;
@@ -55,11 +61,17 @@ io.on("connection", function(socket) {
 		console.log(socket.handshake.address +":"+ socket.id + " disconnect.");
 		delete players[socket.id];
 	});
-	socket.on('movex', function(x) {
-		players[socket.id].moves.push([x,0]);
+	socket.on('right', function() {
+		players[socket.id].moves.x += 1;
 	});
-	socket.on('movey', function(y) {
-		players[socket.id].moves.push([0,y]);
+	socket.on('left', function() {
+		players[socket.id].moves.x -= 1;
+	});
+	socket.on('up', function() {
+		players[socket.id].moves.y -= 1;
+	});
+	socket.on('down', function() {
+		players[socket.id].moves.y += 1;
 	});
 });
 
@@ -67,27 +79,38 @@ io.on("connection", function(socket) {
 setInterval(function() {
 	for(j in players) {
 		var p = players[j];
-		var m = p.moves.shift();
-		if(m) {
-			if(p.color == "#00FF00"){
-				p.x += 2*m[0];
-				p.y += 2*m[1];
+		var m = p.moves;
+		var xSign = Math.sign(m.x);
+		var ySign = Math.sign(m.y);
+		if(m.x !== 0 || m.y !== 0) {
+			if(p.speedy){
+				p.x += xSign*2*PLAYERSPEED;
+				p.y += ySign*2*PLAYERSPEED;
 			} else {
-				p.x += m[0];
-				p.y += m[1];
+				p.x += xSign*PLAYERSPEED;
+				p.y += ySign*PLAYERSPEED;
 			}
+			m.x -= xSign;
+			m.y -= ySign;
+
 			for(i in players) {
 				if(i != p.id && util.circlesTouch(p.x, p.y, p.r, players[i].x, players[i].y, players[i].r)) {
 					var temp = players[i].color;
 					players[i].color = p.color;
-					players[j].color = temp;
-					if(players[i].color == "#00FF00") {
+					p.color = temp;
+					if(p.speedy) {
 						players[i].streakStart = (new Date).getTime();
-						players[j].streakStart = 0;
+						players[i].speedy = true;
+
+						p.streakStart = 0;
+						p.speedy = false;
 					}
-					if(players[j].color == "#00FF00") {
-						players[j].streakStart = (new Date).getTime();
+					if(players[i].speedy) {
+						p.streakStart = (new Date).getTime();
+						p.speedy = true;
+
 						players[i].streakStart = 0;
+						players[i].speedy = false;
 					}
 				}
 			}
