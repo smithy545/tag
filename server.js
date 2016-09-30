@@ -100,8 +100,8 @@ io.on("connection", function(socket) {
 		if(players[socket.id].cooldown < now) {
 			for(i in players) {
 				if(i !== socket.id) {
-					players[i].moves.x *= 2;
-					players[i].moves.y *= 2;
+					players[i].moves.x *= 10;
+					players[i].moves.y *= 10;
 				}
 			}
 			players[socket.id].cooldown = now + 2000;
