@@ -7,11 +7,12 @@ var util = require('./public/js/util.js');
 
 var players = {};
 var sockets = [];
-var colors = ["#FF0000",
-			  "#00FF00",
-			  "#0000FF",
-			  "#00FFFF",
-			  "#FF1493"];
+var colors = ["#FF0000", // red - fire
+			  "#00FF00", // green - speed
+			  "#0000FF", // blue - water
+			  "#00FFFF", // turqoise - ice
+			  "#FF1493"  // pink - magic
+			  ];
 var colori = 0;
 
 var PLAYERSPEED = 1;
@@ -95,24 +96,22 @@ io.on("connection", function(socket) {
 		}
 	});
 	socket.on('water', function() {
-		// same as fire for now
 		var now = Date.now();
 		if(players[socket.id].cooldown < now) {
-			players[socket.id].adj.push({
-				endTime: now + 1000,
-				value: 3
-			});
+			for(i in players) {
+				if(i !== socket.id) {
+					players[i].moves.x *= 2;
+					players[i].moves.y *= 2;
+				}
+			}
 			players[socket.id].cooldown = now + 1000;
 		}
 	});
 	socket.on('magic', function() {
-		// same as fire for now
 		var now = Date.now();
 		if(players[socket.id].cooldown < now) {
-			players[socket.id].adj.push({
-				endTime: now + 1000,
-				value: 3
-			});
+			players[socket.id].x = Math.floor(Math.random()*WIDTH);
+			players[socket.id].y = Math.floor(Math.random()*HEIGHT);
 			players[socket.id].cooldown = now + 1000;
 		}
 	});
