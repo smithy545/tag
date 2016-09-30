@@ -43,6 +43,7 @@ io.on("connection", function(socket) {
 		p.x = 100;
 		p.y = 100;
 		p.r = 10;
+		p.tagging = false;
 		p.id = util.guid();
 		p.moves = {
 			x: 0,
@@ -94,23 +95,32 @@ setInterval(function() {
 			m.y -= ySign;
 
 			for(i in players) {
-				if(i != p.id && util.circlesTouch(p.x, p.y, p.r, players[i].x, players[i].y, players[i].r)) {
-					var temp = players[i].color;
-					players[i].color = p.color;
-					p.color = temp;
-					if(p.speedy) {
-						players[i].streakStart = (new Date).getTime();
-						players[i].speedy = true;
+				if(i !== j) {
+					var touching = util.circlesTouch(p.x, p.y, p.r, players[i].x, players[i].y, players[i].r);
+					if(p.tagging === i && !touching) {
+						p.tagging = false;
+						players[i].tagging = false;
+					} else if(!p.tagging && touching) {
+						var temp = players[i].color;
+						players[i].color = p.color;
+						p.color = temp;
 
-						p.streakStart = 0;
-						p.speedy = false;
-					}
-					if(players[i].speedy) {
-						p.streakStart = (new Date).getTime();
-						p.speedy = true;
+						if(p.speedy) {
+							players[i].streakStart = (new Date).getTime();
+							players[i].speedy = true;
 
-						players[i].streakStart = 0;
-						players[i].speedy = false;
+							p.streakStart = 0;
+							p.speedy = false;
+						}
+						if(players[i].speedy) {
+							p.streakStart = (new Date).getTime();
+							p.speedy = true;
+
+							players[i].streakStart = 0;
+							players[i].speedy = false;
+						}
+						p.tagging = i;
+						players[i].tagging = j;
 					}
 				}
 			}
