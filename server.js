@@ -3,7 +3,7 @@ var path = require('path');
 var app = express();
 var handlebars = require('express-handlebars').create();
 var server = require("http").Server(app);
-var util = require('./public/util.js');
+var util = require('./public/js/util.js');
 
 var players = {};
 var sockets = [];
