@@ -13,7 +13,10 @@ var colors = ["#FF0000",
 			  "#00FFFF",
 			  "#FF1493"];
 var colori = 0;
+
 var PLAYERSPEED = 1;
+var WIDTH = 640;
+var HEIGHT = 480;
 
 server.listen(3000);
 
@@ -85,11 +88,13 @@ setInterval(function() {
 		var ySign = Math.sign(m.y);
 		if(m.x !== 0 || m.y !== 0) {
 			if(p.speedy){
-				p.x += xSign*2*PLAYERSPEED;
-				p.y += ySign*2*PLAYERSPEED;
+				// cause javascript modulo is stupid
+				p.x = ((p.x + xSign*2*PLAYERSPEED)%WIDTH+WIDTH)%WIDTH;
+				p.y = ((p.y + ySign*2*PLAYERSPEED)%HEIGHT+HEIGHT)%HEIGHT;
 			} else {
-				p.x += xSign*PLAYERSPEED;
-				p.y += ySign*PLAYERSPEED;
+				// again, modulo is stupid
+				p.x = ((p.x + xSign*PLAYERSPEED)%WIDTH+WIDTH)%WIDTH;
+				p.y = ((p.y + ySign*PLAYERSPEED)%HEIGHT+HEIGHT)%HEIGHT;
 			}
 			m.x -= xSign;
 			m.y -= ySign;
