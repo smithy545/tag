@@ -54,6 +54,7 @@ io.on("connection", function(socket) {
 	});
 });
 
+// Logic loop
 setInterval(function() {
 	for(j in players) {
 		var p = players[j];

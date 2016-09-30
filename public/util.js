@@ -1,8 +1,6 @@
-function inCircle(cx, cy, r, x, y) {
-	return x <= cx+r && x >= cx-r && y <= cy+r && y >= cy-r;
-}
+Util = {}
 
-function circlesTouch(cx1, cy1, r1, cx2, cy2, r2) {
+Util.circlesTouch = function(cx1, cy1, r1, cx2, cy2, r2) {
 	return Math.abs(cx1 - cx2) <= r1 + r2 && Math.abs(cy1 - cy2) <= r1 + r2;
 }
 
@@ -27,7 +25,7 @@ var Key = {
 	}
 };
 
-function guid() {
+Util.guid = function() {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
@@ -37,5 +35,7 @@ function guid() {
     s4() + '-' + s4() + s4() + s4();
 }
 
-module.exports.inCircle = inCircle;
-module.exports.circlesTouch = circlesTouch;
+var module = module || undefined;
+if(module !== undefined) {
+	module.exports = Util;
+}

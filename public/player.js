@@ -4,7 +4,7 @@ function Player(color) {
 	this.r = 10;
 	this.name = "anon";
 	this.color = color | "#FF0000";
-	this.id = guid();
+	this.id = Util.guid();
 }
 
 Player.prototype.draw = function(ctx) {
@@ -40,5 +40,12 @@ Player.prototype.moveRight = function() {
 }
 
 Player.prototype.getInfo = function() {
-	return {x:this.x, y:this.y, r:this.r, name:this.name, id:this.id, color:this.color};
+	return {
+		x: this.x,
+		y: this.y,
+		r: this.r,
+		name: this.name,
+		id: this.id,
+		color: this.color
+	};
 }
