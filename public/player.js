@@ -19,6 +19,7 @@ Player.prototype.update = function(p) {
 	this.color = p.color;
 	this.x = p.x;
 	this.y = p.y;
+	this.speedy = p.speedy;
 }
 
 Player.prototype.moveUp = function() {

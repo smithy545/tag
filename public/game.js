@@ -81,7 +81,7 @@ Game.draw = function() {
 
 Game.update = function() {
 	for(i in Game.others) {
-		if(Game.others[i].streakStart != 0) {
+		if(Game.others[i].speedy) {
 			Game.log.innerHTML = "Green streak: "+((new Date).getTime() - Game.others[i].streakStart)/1000 +" seconds";
 		}
 	}

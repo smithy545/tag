@@ -108,15 +108,11 @@ setInterval(function() {
 						if(p.speedy) {
 							players[i].streakStart = (new Date).getTime();
 							players[i].speedy = true;
-
-							p.streakStart = 0;
-							p.speedy = false;
+							p.speedy = players[i].speedy; // If they're both speedy
 						}
-						if(players[i].speedy) {
+						else if(players[i].speedy) {
 							p.streakStart = (new Date).getTime();
 							p.speedy = true;
-
-							players[i].streakStart = 0;
 							players[i].speedy = false;
 						}
 						p.tagging = i;
