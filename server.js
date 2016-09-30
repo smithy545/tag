@@ -78,7 +78,7 @@ io.on("connection", function(socket) {
 				endTime: now + 1000,
 				value: 3
 			});
-			players[socket.id].cooldown = now + 1000;
+			players[socket.id].cooldown = now + 2000;
 		}
 	});
 	socket.on('ice', function() {
@@ -92,7 +92,7 @@ io.on("connection", function(socket) {
 					});
 				}
 			}
-			players[socket.id].cooldown = now + 1000;
+			players[socket.id].cooldown = now + 2000;
 		}
 	});
 	socket.on('water', function() {
@@ -104,7 +104,7 @@ io.on("connection", function(socket) {
 					players[i].moves.y *= 2;
 				}
 			}
-			players[socket.id].cooldown = now + 1000;
+			players[socket.id].cooldown = now + 2000;
 		}
 	});
 	socket.on('magic', function() {
@@ -112,7 +112,7 @@ io.on("connection", function(socket) {
 		if(players[socket.id].cooldown < now) {
 			players[socket.id].x = Math.floor(Math.random()*WIDTH);
 			players[socket.id].y = Math.floor(Math.random()*HEIGHT);
-			players[socket.id].cooldown = now + 1000;
+			players[socket.id].cooldown = now + 2000;
 		}
 	});
 	socket.on('right', function() {
