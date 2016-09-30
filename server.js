@@ -107,8 +107,8 @@ setInterval(function() {
 
 						if(p.speedy) {
 							players[i].streakStart = (new Date).getTime();
-							players[i].speedy = true;
 							p.speedy = players[i].speedy; // If they're both speedy
+							players[i].speedy = true;
 						}
 						else if(players[i].speedy) {
 							p.streakStart = (new Date).getTime();
