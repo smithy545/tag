@@ -42,6 +42,8 @@ Player.prototype.usePower = function() {
 		Game.conn.emit('water');
 	} else if(this.color === "#FF1493") {
 		Game.conn.emit('magic');
+	} else if(this.color === "#DC143C") {
+		Game.conn.emit('grow');
 	}
 }
 

@@ -11,13 +11,14 @@ var colors = ["#FF0000", // red - fire
 			  "#00FF00", // green - speed
 			  "#0000FF", // blue - water
 			  "#00FFFF", // turqoise - ice
-			  "#FF1493"  // pink - magic
+			  "#FF1493", // pink - magic
+			  "#DC143C"  // crimson - grow 
 			  ];
 var colori = 0;
 
 var PLAYERSPEED = 1;
-var WIDTH = 640;
-var HEIGHT = 480;
+var WIDTH = 800;
+var HEIGHT = 600;
 
 server.listen(3000);
 
@@ -112,6 +113,16 @@ io.on("connection", function(socket) {
 		if(players[socket.id].cooldown < now) {
 			players[socket.id].x = Math.floor(Math.random()*WIDTH);
 			players[socket.id].y = Math.floor(Math.random()*HEIGHT);
+			players[socket.id].cooldown = now + 2000;
+		}
+	});
+	socket.on('grow', function() {
+		var now = Date.now();
+		if(players[socket.id].cooldown < now) {
+			players[socket.id].r *= 2;
+			setTimeout(function(){
+				players[socket.id].r /= 2;
+			}, 2000);
 			players[socket.id].cooldown = now + 2000;
 		}
 	});
