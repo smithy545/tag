@@ -19,7 +19,6 @@ Player.prototype.update = function(p) {
 	this.color = p.color;
 	this.x = p.x;
 	this.y = p.y;
-	this.speedy = p.speedy;
 }
 
 Player.prototype.moveUp = function() {
@@ -34,3 +33,20 @@ Player.prototype.moveLeft = function() {
 Player.prototype.moveRight = function() {
 	Game.conn.emit('right');
 }
+Player.prototype.usePower = function() {
+	if(this.color === "#FF0000") {
+		Game.conn.emit('fire');
+	} else if(this.color === "#00FFFF") {
+		Game.conn.emit('ice');
+	} else if(this.color === "#0000FF") {
+		Game.conn.emit('water');
+	} else if(this.color === "#FF1493") {
+		Game.conn.emit('magic');
+	}
+}
+
+document.addEventListener("keyup", function(evt) {
+	if(evt.keyCode === Key.SPACE) {
+		Game.player.usePower();
+	}
+});

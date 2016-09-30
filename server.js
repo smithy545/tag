@@ -35,17 +35,21 @@ io.on("connection", function(socket) {
 		var p = {};
 
 		p.color = colors[colori++%colors.length];
-		if(p.color == "#00FF00") {
-			p.speedy = true;
-			p.streakStart = (new Date).getTime();
-		} else {
-			p.speedy = false;
-			p.streakStart = 0;
-		}
-
 		p.x = 100;
 		p.y = 100;
 		p.r = 10;
+		if(Object.keys(players).length > 0) {
+			p.king = false;
+		} else {
+			p.king = Date.now();
+		}
+		p.adj = [];
+		if(p.color == "#00FF00") {
+			p.speedy = 2;
+		} else {
+			p.speedy = 1;
+		}
+		p.cooldown = 0;
 		p.tagging = false;
 		p.id = util.guid();
 		p.moves = {
@@ -64,6 +68,52 @@ io.on("connection", function(socket) {
 	socket.on('disconnect', function() {
 		console.log(socket.handshake.address +":"+ socket.id + " disconnect.");
 		delete players[socket.id];
+	});
+	socket.on('fire', function() {
+		var now = Date.now();
+		if(players[socket.id].cooldown < now) {
+			players[socket.id].adj.push({
+				endTime: now + 1000,
+				value: 3
+			});
+			players[socket.id].cooldown = now + 1000;
+		}
+	});
+	socket.on('ice', function() {
+		var now = Date.now();
+		if(players[socket.id].cooldown < now) {
+			for(i in players) {
+				if(i !== socket.id) {
+					players[i].adj.push({
+						endTime: now + 1000,
+						value: 0.5
+					});
+				}
+			}
+			players[socket.id].cooldown = now + 1000;
+		}
+	});
+	socket.on('water', function() {
+		// same as fire for now
+		var now = Date.now();
+		if(players[socket.id].cooldown < now) {
+			players[socket.id].adj.push({
+				endTime: now + 1000,
+				value: 3
+			});
+			players[socket.id].cooldown = now + 1000;
+		}
+	});
+	socket.on('magic', function() {
+		// same as fire for now
+		var now = Date.now();
+		if(players[socket.id].cooldown < now) {
+			players[socket.id].adj.push({
+				endTime: now + 1000,
+				value: 3
+			});
+			players[socket.id].cooldown = now + 1000;
+		}
 	});
 	socket.on('right', function() {
 		players[socket.id].moves.x += 1;
@@ -86,40 +136,48 @@ setInterval(function() {
 		var m = p.moves;
 		var xSign = Math.sign(m.x);
 		var ySign = Math.sign(m.y);
+
 		if(m.x !== 0 || m.y !== 0) {
-			if(p.speedy){
-				// cause javascript modulo is stupid
-				p.x = ((p.x + xSign*2*PLAYERSPEED)%WIDTH+WIDTH)%WIDTH;
-				p.y = ((p.y + ySign*2*PLAYERSPEED)%HEIGHT+HEIGHT)%HEIGHT;
-			} else {
-				// again, modulo is stupid
-				p.x = ((p.x + xSign*PLAYERSPEED)%WIDTH+WIDTH)%WIDTH;
-				p.y = ((p.y + ySign*PLAYERSPEED)%HEIGHT+HEIGHT)%HEIGHT;
+			// add adjustments
+			var adj = 1 * p.speedy;
+			for(k in p.adj) {
+				if(Date.now() > p.adj[k].endTime) {
+					delete p.adj[k];
+				} else {
+					adj *= p.adj[k].value;
+				}
 			}
+
+			// cause javascript modulo is stupid
+			p.x = ((p.x + xSign*adj*PLAYERSPEED)%WIDTH+WIDTH)%WIDTH;
+			p.y = ((p.y + ySign*adj*PLAYERSPEED)%HEIGHT+HEIGHT)%HEIGHT;
+
 			m.x -= xSign;
 			m.y -= ySign;
 
+			// check for collisions
 			for(i in players) {
 				if(i !== j) {
 					var touching = util.circlesTouch(p.x, p.y, p.r, players[i].x, players[i].y, players[i].r);
-					if(p.tagging === i && !touching) {
+					if(p.tagging === i && !touching) { // if they go from touching to not touching
 						p.tagging = false;
 						players[i].tagging = false;
-					} else if(!p.tagging && touching) {
+					} else if(!p.tagging && touching) { // if they they start touching
 						var temp = players[i].color;
 						players[i].color = p.color;
 						p.color = temp;
 
-						if(p.speedy) {
-							players[i].streakStart = (new Date).getTime();
-							p.speedy = players[i].speedy; // If they're both speedy
-							players[i].speedy = true;
+						p.speedy = 1 + (p.color === "#00FF00");
+						players[i].speedy = 1 + (p.color === "#00FF00");
+
+						if(p.king) {
+							players[i].king = Date.now();
+							p.king = false;
+						} else if (players[i].king) {
+							p.king = Date.now();
+							players[i].king = false;
 						}
-						else if(players[i].speedy) {
-							p.streakStart = (new Date).getTime();
-							p.speedy = true;
-							players[i].speedy = false;
-						}
+
 						p.tagging = i;
 						players[i].tagging = j;
 					}

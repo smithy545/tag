@@ -43,20 +43,19 @@ Game.start = function() {
 		Game.player.update(data[Game.player.id]);
 		Game.conn.emit('get others');
 	});
-
 	Game._onEachFrame(Game.run);
 };
 
 Game.run = (function() {
 	var loops = 0, skipTicks = 1000 / Game.fps,
       maxFrameSkip = 10,
-      nextGameTick = (new Date).getTime(),
+      nextGameTick = Date.now(),
       lastGameTick;
 
 	return function() {
 		loops = 0;
 
-		while ((new Date).getTime() > nextGameTick) {
+		while (Date.now() > nextGameTick) {
 			Game.update();
 			nextGameTick += skipTicks;
 			loops++;
@@ -70,19 +69,39 @@ Game.draw = function() {
 	Game.context.clearRect(0, 0, Game.width, Game.height);
 	var ctx = Game.context;
 	for(i in Game.others) {
+		ctx.translate(Game.others[i].x, Game.others[i].y);
+
+		var r = Game.others[i].r;
+		var r2 = r/2;
+
+		// draw circle
 		ctx.beginPath();
-		ctx.moveTo(Game.others[i].x,Game.others[i].y);
 		ctx.fillStyle = Game.others[i].color;
-		ctx.arc(Game.others[i].x,Game.others[i].y,Game.others[i].r,0,2*Math.PI);
+		ctx.arc(0,0,r,0,2*Math.PI);
 		ctx.fill();
 		ctx.closePath();
+
+		// draw crown
+		if(Game.others[i].king) {
+			ctx.fillStyle = "#FFFF00";
+			ctx.beginPath();
+			ctx.moveTo(-r2,-r2);
+			ctx.lineTo(0,0);
+			ctx.lineTo(r2,-r2)
+			ctx.lineTo(r2,r2);
+			ctx.lineTo(-r2,r2);
+			ctx.closePath();
+			ctx.fill();
+		}
+
+		ctx.translate(-Game.others[i].x, -Game.others[i].y);
 	}
 };
 
 Game.update = function() {
 	for(i in Game.others) {
-		if(Game.others[i].speedy) {
-			Game.log.innerHTML = "Green streak: "+((new Date).getTime() - Game.others[i].streakStart)/1000 +" seconds";
+		if(Game.others[i].king) {
+			Game.log.innerHTML = "King streak: "+(Date.now() - Game.others[i].king)/1000 +" seconds";
 		}
 	}
 	/* Context translation setup

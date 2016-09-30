@@ -11,6 +11,7 @@ var Key = {
 	RIGHT: 68,
 	UP: 87,
 	DOWN: 83,
+	SPACE: 32,
 
 	isDown: function(key) {
 		return this._map[key];
