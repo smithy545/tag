@@ -12,10 +12,10 @@ Player.prototype.init = function(id, color) {
 }
 
 Player.prototype.update = function(p) {
-	if(Key.isDown(Key.UP)) this.moveUp();
-	if(Key.isDown(Key.LEFT)) this.moveLeft();
-	if(Key.isDown(Key.RIGHT)) this.moveRight();
-	if(Key.isDown(Key.DOWN)) this.moveDown();
+	if(Key.isDown(Key.UP) || Key.isDown(Key.W)) this.moveUp();
+	if(Key.isDown(Key.LEFT) || Key.isDown(Key.A)) this.moveLeft();
+	if(Key.isDown(Key.RIGHT) || Key.isDown(Key.D)) this.moveRight();
+	if(Key.isDown(Key.DOWN) || Key.isDown(Key.S)) this.moveDown();
 	this.color = p.color;
 	this.x = p.x;
 	this.y = p.y;

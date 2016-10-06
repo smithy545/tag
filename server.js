@@ -16,11 +16,15 @@ var colors = ["#FF0000", // red - fire
 			  ];
 var colori = 0;
 
-var PLAYERSPEED = 1;
+var PLAYERSPEED = 3;
 var WIDTH = 800;
 var HEIGHT = 600;
 
-server.listen(3000);
+Math.sign = function(x) {
+	return x ? x < 0 ? -1:1:0
+}
+
+server.listen(80);
 
 app.get('/', function(req, res, next) {
 	if(req.xhr) {

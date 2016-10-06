@@ -5,25 +5,29 @@ Util.circlesTouch = function(cx1, cy1, r1, cx2, cy2, r2) {
 }
 
 var Key = {
-	_map: {},
+    _map: {},
 
-	LEFT: 65,
-	RIGHT: 68,
-	UP: 87,
-	DOWN: 83,
-	SPACE: 32,
-
-	isDown: function(key) {
-		return this._map[key];
-	},
-
-	onKeyDown: function(evt) {
-		this._map[evt.keyCode] = true;
-	},
-
-	onKeyUp: function(evt) {
-		delete this._map[evt.keyCode];
-	}
+    W: 87,
+    A: 65,
+    S: 83,
+    D: 68,
+    LEFT: 65,
+    RIGHT: 68,
+    UP: 87,
+    DOWN: 83,
+    SPACE: 32,
+    
+    isDown: function(key) {
+	return this._map[key];
+    },
+    
+    onKeyDown: function(evt) {
+	this._map[evt.keyCode] = true;
+    },
+    
+    onKeyUp: function(evt) {
+	delete this._map[evt.keyCode];
+    }
 };
 
 Util.guid = function() {
