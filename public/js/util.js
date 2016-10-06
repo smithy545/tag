@@ -11,10 +11,10 @@ var Key = {
     A: 65,
     S: 83,
     D: 68,
-    LEFT: 65,
-    RIGHT: 68,
-    UP: 87,
-    DOWN: 83,
+    LEFT: 37,
+    RIGHT: 39,
+    UP: 38,
+    DOWN: 40,
     SPACE: 32,
     
     isDown: function(key) {
