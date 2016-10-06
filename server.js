@@ -153,7 +153,7 @@ setInterval(function() {
 		var ySign = Math.sign(m.y);
 
 		if(m.x !== 0 || m.y !== 0) {
-			// add adjustments
+			// add speed adjustments
 			var adj = 1 * p.speedy;
 			for(k in p.adj) {
 				if(Date.now() > p.adj[k].endTime) {
@@ -172,7 +172,8 @@ setInterval(function() {
 
 			// check for collisions
 			for(i in players) {
-				if(i !== j) {
+				if(i !== j) // Check against self
+				{
 					var touching = util.circlesTouch(p.x, p.y, p.r, players[i].x, players[i].y, players[i].r);
 					if(p.tagging === i && !touching) { // if they go from touching to not touching
 						p.tagging = false;
@@ -183,7 +184,7 @@ setInterval(function() {
 						p.color = temp;
 
 						p.speedy = 1 + (p.color === "#00FF00");
-						players[i].speedy = 1 + (p.color === "#00FF00");
+						players[i].speedy = 1 + (players[i].color === "#00FF00");
 
 						if(p.king) {
 							players[i].king = Date.now();
@@ -222,11 +223,11 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
+	res.status(err.status || 500);
+	res.render('error', {
+	  message: err.message,
+	  error: err
+	});
   });
 }
 
@@ -235,8 +236,8 @@ if (app.get('env') === 'development') {
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
-    message: err.message,
-    error: {}
+	message: err.message,
+	error: {}
   });
 });
 

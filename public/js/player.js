@@ -4,7 +4,7 @@ function Player() {
 	this.r = 10;
 	this.color = undefined;
 	this.id = undefined;
-    this.speed = 1;
+	this.speed = 1;
 }
 
 Player.prototype.init = function(id, color) {
@@ -20,27 +20,27 @@ Player.prototype.update = function(p) {
 	this.color = p.color;
 	this.x = p.x;
 	this.y = p.y;
-    if(this.color === "#00FF00") {
-	this.speed = 2;
-    } else {
-	this.speed = 1;
-    }
+	if(this.color === "#00FF00") {
+		this.speed = 2;
+	} else {
+		this.speed = 1;
+	}
 }
 
 Player.prototype.moveUp = function() {
-    this.y -= this.speed;
+	this.y -= this.speed;
 	Game.conn.emit('up');
 }
 Player.prototype.moveDown = function() {
-    this.y += this.speed;
+	this.y += this.speed;
 	Game.conn.emit('down');
 }
 Player.prototype.moveLeft = function() {
-    this.x -= this.speed;
+	this.x -= this.speed;
 	Game.conn.emit('left');
 }
 Player.prototype.moveRight = function() {
-    this.x += this.speed;
+	this.x += this.speed;
 	Game.conn.emit('right');
 }
 Player.prototype.usePower = function() {
